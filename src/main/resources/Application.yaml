@@ -1,0 +1,34 @@
+spring:
+  application:
+    name: shadhi
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/matrimony
+    username: root
+    password: minipass
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+  redis:
+    host: localhost
+    port: 9003
+
+security:
+  secret:
+    key: "Hello Dear"
+
+minio:
+  secret:
+    key: pOrcRWRBiQVGHprGRYfryyj6mtchQFRKnVg65V7A
+  access:
+    key: VtArttatwUncRdg5R98E
+  bucket:
+    name: shadhi-bucket
+  endpoint: http://localhost:9000
