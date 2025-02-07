@@ -1,8 +1,10 @@
 package com.sayit.shadhi.Security.Authentication;
 
+import com.sayit.shadhi.Security.UserDetails.UserDetailImp;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.List;
@@ -11,19 +13,27 @@ public class SecurityAuthentication implements Authentication {
 
     private boolean isAuthenticated;
 
-    private String key;
+    private UserDetails userDetails;
 
-    public String getKey() {
-        return key;
-    }
+    private String token;
 
-    public void setKey(String key) {
-        this.key = key;
-    }
 
-    public SecurityAuthentication(boolean isAuthenticated , String key){
+    public SecurityAuthentication(boolean isAuthenticated , UserDetails user , String token){
         this.isAuthenticated = isAuthenticated;
-        this.key =  key;
+        this.userDetails =  user;
+        this.token =  token;
+    }
+
+    public UserDetails getUserDetails() {
+        return userDetails;
+    }
+
+    public void setUserDetails(UserDetails userDetails) {
+        this.userDetails = userDetails;
+    }
+
+    public String getToken() {
+        return token;
     }
 
     @Override
@@ -33,17 +43,17 @@ public class SecurityAuthentication implements Authentication {
 
     @Override
     public Object getCredentials() {
-        return null;
+        return userDetails.getPassword();
     }
 
     @Override
     public Object getDetails() {
-        return null;
+        return userDetails.getUsername();
     }
 
     @Override
     public Object getPrincipal() {
-        return null;
+        return userDetails.toString();
     }
 
     @Override
@@ -58,6 +68,6 @@ public class SecurityAuthentication implements Authentication {
 
     @Override
     public String getName() {
-        return "";
+        return userDetails.getUsername();
     }
 }

@@ -3,11 +3,13 @@ package com.sayit.shadhi.Contollers;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.sayit.shadhi.DTOs.LoginDTO;
 import com.sayit.shadhi.Models.User;
+import com.sayit.shadhi.Security.Authentication.ContextImplementation;
 import com.sayit.shadhi.Services.AuthenticationService;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,6 +36,7 @@ public class AuthenticationController {
 
     @PostMapping("/login")
     public ResponseEntity<String> loginAsuser(@RequestBody LoginDTO userDetail){
+      Authentication authentication =  new ContextImplementation().getAuthentication();
         try{
             return authenticationService.isUserisValid(userDetail);
         }catch (UsernameNotFoundException | JsonProcessingException j){

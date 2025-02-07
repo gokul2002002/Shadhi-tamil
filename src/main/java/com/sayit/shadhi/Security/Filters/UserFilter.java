@@ -2,6 +2,7 @@ package com.sayit.shadhi.Security.Filters;
 
 import com.sayit.shadhi.Security.Authentication.SecurityAuthentication;
 import com.sayit.shadhi.Security.SecurityManager;
+import com.sayit.shadhi.Security.UserDetails.UserDetailImp;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -26,13 +27,13 @@ public class UserFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
-        String headerKey = request.getHeader("key");
-        if(headerKey.isEmpty()){
+        String token = request.getHeader("bearer");
+        if(token.isEmpty()){
             response.setStatus(HttpStatus.BAD_GATEWAY.value());
             response.getWriter().write("Missing jwt token");
             return;
         }
-        SecurityAuthentication auth = (SecurityAuthentication) securityManager.authenticate(new SecurityAuthentication(false , headerKey));
+        SecurityAuthentication auth = (SecurityAuthentication) securityManager.authenticate(new SecurityAuthentication(false , null , token));
         if(auth.isAuthenticated()){
             SecurityContextHolder.getContext().setAuthentication(auth);
             filterChain.doFilter(request , response);
