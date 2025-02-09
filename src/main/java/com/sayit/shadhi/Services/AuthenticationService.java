@@ -5,8 +5,10 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sayit.shadhi.DTOs.LoginDTO;
+import com.sayit.shadhi.Enums.GeneralStatus;
 import com.sayit.shadhi.Models.User;
 import com.sayit.shadhi.Repositories.UserRepository;
+import com.sayit.shadhi.Status;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,6 +18,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -34,8 +37,8 @@ public class AuthenticationService {
     private final RedisService redisService;
     private final ObjectMapper objectMapper;
 
-
-    public ResponseEntity<List<User>> sendOtpForVerification(){
+    public ResponseEntity<List<User>> sendOtpForVerification(String email){
+        redisService.addItem(email , "12324" , Duration.ofMinutes(2));
         return ResponseEntity.status(HttpStatus.OK).body(userRepository.findAll());
     }
 
@@ -48,7 +51,6 @@ public class AuthenticationService {
         Optional<User> user =  userRepository.findByUserName(loginDTO.getUserName());
         if(user.isPresent()){
             boolean isValid =  passwordEncoder.matches(loginDTO.getPassword(), user.get().getPassword() );
-            redisService.addItem(user.get().getUserName() , "12324");
             if (isValid){
                 String jwt = JWT.create()
                         .withIssuer("shadhi.tamil.com")
@@ -67,5 +69,19 @@ public class AuthenticationService {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
         return ResponseEntity.ok().body("signed-in successfully");
+    }
+
+
+    public GeneralStatus verifyOtp(
+            String email , String OTP
+    ){
+        if(OTP.equals(
+                redisService.getItem(email)
+
+        )){
+            redisService.addItem(email , OTP , Duration.ofMinutes(10));
+            return GeneralStatus.ACCEPTED;
+        }
+        throw new RuntimeException("Not a valid OTP");
     }
 }

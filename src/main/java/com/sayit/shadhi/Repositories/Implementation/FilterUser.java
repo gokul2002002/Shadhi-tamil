@@ -1,18 +1,13 @@
 package com.sayit.shadhi.Repositories.Implementation;
 
 import com.sayit.shadhi.Models.User;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-@FunctionalInterface
+@Repository
 public interface FilterUser {
-
-    public List<User> getUserBasedOnFilter(
-              int fromAge
-            , int toAge
-            , String caste
-            , String subCaste
-            , List<Long> salaryRange
-            , String Religion
+     List<User> getUserBasedOnFilter(
+            int fromAge, int toAge, String caste, String subCaste, List<Long> salaryRange, String religion
             );
 }

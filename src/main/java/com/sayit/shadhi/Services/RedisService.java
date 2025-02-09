@@ -11,8 +11,12 @@ import java.time.Duration;
 public class RedisService {
     private final RedisTemplate redisTemplate;
 
-    public String addItem(String userName , String otp){
-        redisTemplate.opsForValue().set(userName , otp , Duration.ofMinutes(2));
+    public String addItem(String userName , String otp , Duration expirationMinitues){
+        redisTemplate.opsForValue().set(userName , otp , expirationMinitues);
         return "Sended";
+    }
+
+    public String getItem(String userName){
+        return (String) redisTemplate.opsForValue().get(userName);
     }
 }

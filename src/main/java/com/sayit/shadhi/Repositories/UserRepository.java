@@ -20,4 +20,19 @@ public interface UserRepository extends JpaRepository<User , Long> {
     @Query("UPDATE User u SET u.authority = :role WHERE u.userName = :username")
     public void updateRoleOfTheUser(@Param("username") String userName , @Param("role") String role);
 
+    @Query("SELECT u FROM User u " +
+            "WHERE u.age BETWEEN :fromAge AND :toAge " +
+            "AND (:community IS NULL OR u.community = :community) " +
+            "AND (:subCaste IS NULL OR u.subCaste = :subCaste) " +
+            "AND (:startRange IS NULL OR :endRange IS NULL OR u.salaryPerAnnum BETWEEN :startRange AND :endRange) " +
+            "AND (:religion IS NULL OR u.religion = :religion)")
+    List<User> getUserBasedOnFilter(
+            @Param("fromAge") int fromAge,
+            @Param("toAge") int toAge,
+            @Param("caste") String community,
+            @Param("subCaste") String subCaste,
+            @Param("startRange") Long startRange,
+            @Param("endRange") Long endRange,
+            @Param("religion") String religion
+    );
 }

@@ -28,7 +28,7 @@ public class SecurityProvider implements AuthenticationProvider {
     public Authentication authenticate(Authentication authentication) throws AuthenticationException , TokenExpiredException {
         SecurityAuthentication securityAuthentication = (SecurityAuthentication) authentication;
         UserPOJO userPOJO =  securityDecoder.getUserFromJwt(securityAuthentication.getToken());
-        if (userPOJO.getIsValid()){
+        if (userPOJO.getValid()){
             securityAuthentication.setUserDetails(userPOJO.getUserDetails());
             securityAuthentication.setAuthenticated(true);
             return authentication;

@@ -34,7 +34,6 @@ public class SecurityDecoder {
                    .isValid(true)
                    .userDetails(new UserDetailImp(user))
                    .build();
-                   new UserDetailImp(user);
        }
        throw new TokenExpiredException("Token expired... log in again");
     }

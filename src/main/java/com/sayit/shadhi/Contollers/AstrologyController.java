@@ -1,15 +1,17 @@
 package com.sayit.shadhi.Contollers;
 
+import com.sayit.shadhi.DTOs.AstrologerPriceFilter;
 import com.sayit.shadhi.DTOs.ChartRequestDTO;
 import com.sayit.shadhi.DTOs.ChartScoreDTO;
-import com.sayit.shadhi.Enums.GeneralStatus;
 import com.sayit.shadhi.Exceptions.ChartNotFoundException;
+import com.sayit.shadhi.Models.Astrologer;
 import com.sayit.shadhi.Services.AstrologyService;
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @AllArgsConstructor
@@ -37,4 +39,16 @@ public class AstrologyController {
             return ResponseEntity.badRequest().body("not valid request");
         }
     }
+
+    @GetMapping("/get/all-astrologer")
+    public ResponseEntity<List<Astrologer>> getAllAstrologer(){
+        return ResponseEntity.ok().body(astrologyService.getAllAstrologer());
+    }
+
+    @GetMapping("/get/astrologer/price-range")
+    public ResponseEntity<List<Astrologer>> getAstrologerBetweenthePriceRange(@RequestBody AstrologerPriceFilter astrologerPriceFilter){
+        return ResponseEntity.ok().body(
+                astrologyService.getAstrologerByRange(astrologerPriceFilter));
+    }
+
 }

@@ -1,11 +1,14 @@
 package com.sayit.shadhi.Services;
 
+import com.sayit.shadhi.DTOs.AstrologerPriceFilter;
 import com.sayit.shadhi.DTOs.ChartRequestDTO;
 import com.sayit.shadhi.DTOs.ChartScoreDTO;
 import com.sayit.shadhi.Enums.AstrologyStatus;
 import com.sayit.shadhi.Enums.GeneralStatus;
 import com.sayit.shadhi.Exceptions.ChartNotFoundException;
+import com.sayit.shadhi.Models.Astrologer;
 import com.sayit.shadhi.Models.ChartRequest;
+import com.sayit.shadhi.Repositories.AstrologerRepository;
 import com.sayit.shadhi.Repositories.ChartRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +24,8 @@ import java.util.Optional;
 public class AstrologyService {
 
     private final ChartRepository chartRepository;
+
+    private final AstrologerRepository astrologerRepository;
 
     @Transactional
     public String getChartdocuments(ChartRequestDTO chartRequestDTO)throws ChartNotFoundException {
@@ -45,12 +50,38 @@ public class AstrologyService {
            ChartRequest chartData = chartRequest.get();
            chartData.setScore(chartScoreDTO.getScore());
            chartData.setStatus(AstrologyStatus.COMPLETED);
-           giveIntemationToUsers(chartData.getBrideID() , chartData.getGroomID() , "your charts return with the score , take a look.");
            return GeneralStatus.UPDATED;
         }else {
             throw new ChartNotFoundException("Chart not found in this id");
         }
     }
 
+    public List<Astrologer> getAllAstrologer(){
+         return astrologerRepository.findAll();
+    }
+
+    public List<Astrologer> getAstrologerByRange(AstrologerPriceFilter astrologerPriceFilter){
+         return astrologerRepository.getAllAstrologerBetweenTheRange(astrologerPriceFilter.getStartFrom() , astrologerPriceFilter.getEndAt());
+    }
+
+    public List<ChartRequest> getChartRequest(long astrologerId)throws ChartNotFoundException{
+         List<ChartRequest> chartRequestList = chartRepository.getChartsOfTheAstrologer(astrologerId);
+         if (chartRequestList.isEmpty()){
+              throw new ChartNotFoundException("chart not available for you");
+         }else {
+              return chartRequestList;
+         }
+    }
+
+    @Transactional
+    public String setScoretotheCharts(double scorePoints ,  long ChartId){
+         Optional<ChartRequest> chartRequest = chartRepository.findById(ChartId);
+         if (chartRequest.isPresent()){
+               chartRequest.get().setScore(scorePoints);
+         }else {
+              throw new ChartNotFoundException("Chart not available for you");
+         }
+         return "Updated successFuly";
+    }
 
 }

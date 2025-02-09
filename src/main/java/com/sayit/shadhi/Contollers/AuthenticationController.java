@@ -2,10 +2,10 @@ package com.sayit.shadhi.Contollers;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.sayit.shadhi.DTOs.LoginDTO;
+import com.sayit.shadhi.Enums.GeneralStatus;
 import com.sayit.shadhi.Models.User;
 import com.sayit.shadhi.Security.Authentication.ContextImplementation;
 import com.sayit.shadhi.Services.AuthenticationService;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,8 +21,8 @@ public class AuthenticationController {
     private final AuthenticationService authenticationService;
 
     @PostMapping("/send-otp")
-    public ResponseEntity<?> sendOtpForVerification(@RequestParam String mobileNumber){
-        return authenticationService.sendOtpForVerification();
+    public ResponseEntity<?> sendOtpForVerification(@RequestParam String email){
+        return authenticationService.sendOtpForVerification(email);
     }
 
     @PostMapping("/signup")
@@ -43,4 +43,15 @@ public class AuthenticationController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(j.getLocalizedMessage());
         }
     }
+
+    @PutMapping("/verify/OTP")
+    public GeneralStatus verifyOtp(@RequestParam String mail , @RequestParam String OTP){
+        return authenticationService.verifyOtp(mail , OTP);
+    }
+
+    @PostMapping("/sign-up/astrologer")
+    public ResponseEntity<String> signupAsAstrologer(@RequestBody User user) throws Exception {
+        return authenticationService.signupAsUser(user);
+    }
+
 }

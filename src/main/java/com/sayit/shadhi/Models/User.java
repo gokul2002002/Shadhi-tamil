@@ -59,6 +59,12 @@ public class User {
 
     private List<String> galary;
 
+    @Column(
+            updatable = true,
+            nullable = true
+    )
+    private String chart;
+
     @PrePersist
     public void doPrepresist(){
         if (community == null){

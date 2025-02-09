@@ -6,5 +6,5 @@ import lombok.Data;
 public class ChartScoreDTO {
     private long chartId;
 
-    private long score;
+    private double score;
 }
