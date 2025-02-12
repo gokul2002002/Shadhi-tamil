@@ -12,14 +12,6 @@ import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User , Long> {
 
-    @Query("SELECT u FROM User u WHERE u.userName = :userName")
-    Optional<User> findByUserName(@Param("userName") String userName);
-
-
-    @Modifying
-    @Query("UPDATE User u SET u.authority = :role WHERE u.userName = :username")
-    public void updateRoleOfTheUser(@Param("username") String userName , @Param("role") String role);
-
     @Query("SELECT u FROM User u " +
             "WHERE u.age BETWEEN :fromAge AND :toAge " +
             "AND (:community IS NULL OR u.community = :community) " +
@@ -35,4 +27,6 @@ public interface UserRepository extends JpaRepository<User , Long> {
             @Param("endRange") Long endRange,
             @Param("religion") String religion
     );
+
+    public Optional<User> findByEmail(String email);
 }

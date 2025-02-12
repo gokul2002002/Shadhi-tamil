@@ -1,6 +1,7 @@
 package com.sayit.shadhi.Contollers;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.sayit.shadhi.DTOs.AstrologerCreationDTO;
 import com.sayit.shadhi.DTOs.LoginDTO;
 import com.sayit.shadhi.Enums.GeneralStatus;
 import com.sayit.shadhi.Models.User;
@@ -26,19 +27,15 @@ public class AuthenticationController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<?> signupAsUser(@RequestBody User user){
-        try{
-            return authenticationService.signupAsUser(user);
-        }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
-        }
+    public ResponseEntity<String> signupAsUser(@RequestBody User user){
+            return ResponseEntity.status(HttpStatus.OK).body(authenticationService.signupAsUser(user));
     }
 
     @PostMapping("/login")
     public ResponseEntity<String> loginAsuser(@RequestBody LoginDTO userDetail){
       Authentication authentication =  new ContextImplementation().getAuthentication();
         try{
-            return authenticationService.isUserisValid(userDetail);
+            return authenticationService.loginAsUser(userDetail);
         }catch (UsernameNotFoundException | JsonProcessingException j){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(j.getLocalizedMessage());
         }
@@ -50,8 +47,14 @@ public class AuthenticationController {
     }
 
     @PostMapping("/sign-up/astrologer")
-    public ResponseEntity<String> signupAsAstrologer(@RequestBody User user) throws Exception {
-        return authenticationService.signupAsUser(user);
+    public ResponseEntity<String> signupAsAstrologer(@RequestBody AstrologerCreationDTO astrologer) throws Exception {
+
+        return null;
+    }
+
+    @PostMapping("/login/astrologer")
+    public ResponseEntity<String> loginAsAstrologer(LoginDTO loginDTO) throws JsonProcessingException {
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(authenticationService.loginAsAstrologer(loginDTO));
     }
 
 }

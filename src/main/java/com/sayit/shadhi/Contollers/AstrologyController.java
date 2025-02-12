@@ -5,10 +5,12 @@ import com.sayit.shadhi.DTOs.ChartRequestDTO;
 import com.sayit.shadhi.DTOs.ChartScoreDTO;
 import com.sayit.shadhi.Exceptions.ChartNotFoundException;
 import com.sayit.shadhi.Models.Astrologer;
+import com.sayit.shadhi.Security.Authentication.ContextImplementation;
 import com.sayit.shadhi.Services.AstrologyService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,22 +24,13 @@ public class AstrologyController {
 
     @GetMapping("/get/documents")
     public ResponseEntity<?> getAstrologyDocument(@RequestBody ChartRequestDTO chartRequestDTO){
-        try {
-            return ResponseEntity.ok().body(
-                    astrologyService.getChartdocuments(chartRequestDTO)
-            );
-        }catch (ChartNotFoundException ce){
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(ce.getLocalizedMessage());
-        }
+        Authentication authentication =  new ContextImplementation().getAuthentication();
+            return ResponseEntity.ok().body(astrologyService.getChartdocuments(chartRequestDTO));
     }
 
     @PostMapping("/give-score")
-    public ResponseEntity<?> giveScoreToUsers(@RequestBody ChartScoreDTO chartScoreDTO){
-        try {
+    public ResponseEntity<String> giveScoreToUsers(@RequestBody ChartScoreDTO chartScoreDTO){
             return ResponseEntity.ok().body("Score Successfully updated");
-        }catch (RuntimeException re){
-            return ResponseEntity.badRequest().body("not valid request");
-        }
     }
 
     @GetMapping("/get/all-astrologer")
@@ -46,7 +39,7 @@ public class AstrologyController {
     }
 
     @GetMapping("/get/astrologer/price-range")
-    public ResponseEntity<List<Astrologer>> getAstrologerBetweenthePriceRange(@RequestBody AstrologerPriceFilter astrologerPriceFilter){
+    public ResponseEntity<List<Astrologer>> getAstrologerBetweenThePriceRange(@RequestBody AstrologerPriceFilter astrologerPriceFilter){
         return ResponseEntity.ok().body(
                 astrologyService.getAstrologerByRange(astrologerPriceFilter));
     }

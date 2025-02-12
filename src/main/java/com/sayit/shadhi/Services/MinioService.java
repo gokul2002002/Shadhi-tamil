@@ -24,7 +24,7 @@ public class MinioService implements MinioInterface {
     private  final MinioClient minioClient;
 
     @Override
-    public GeneralStatus postImageToTheServer(InputStream inputStream ,  String objectName) throws IOException, ServerException, InsufficientDataException, ErrorResponseException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
+    public String postImageToTheServer(InputStream inputStream ,  String objectName) throws IOException, ServerException, InsufficientDataException, ErrorResponseException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
 
            ObjectWriteResponse objectWriteResponse =  minioClient.putObject(
                     PutObjectArgs
@@ -33,7 +33,7 @@ public class MinioService implements MinioInterface {
                             .object(objectName)
                             .build()
             );
-           return GeneralStatus.SUCCESSFUL;
+           return objectName;
     }
 
     @Override

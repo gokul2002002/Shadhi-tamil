@@ -15,6 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "User")
+@SuppressWarnings("all")
 public class User {
 
     @Id
@@ -27,10 +28,9 @@ public class User {
 
     @Column(
             nullable = false,
-            unique = true,
-            updatable = false
+            unique = true
     )
-    private String userName;
+    private String email;
 
     private String name;
 
@@ -57,13 +57,16 @@ public class User {
 
     private String profilePhoto;
 
+    @ElementCollection
     private List<String> galary;
 
-    @Column(
-            updatable = true,
-            nullable = true
-    )
-    private String chart;
+    @OneToOne
+    @JoinColumn(name = "chart_id")
+    private Chart chart;
+
+    @ElementCollection
+    private List<User> pairs;
+
 
     @PrePersist
     public void doPrepresist(){
@@ -79,8 +82,5 @@ public class User {
         if (religion == null){
             religion = "NOT_PREFERED";
         }
-
     }
-
-
-    }
+}

@@ -21,14 +21,12 @@ public class ChartRequest {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long requestID;
 
-    @ManyToOne
-    @JoinColumn(name = "astrologer" , referencedColumnName = "astrologerId")
-    private Astrologer astrologer;
-
     @Enumerated(value = EnumType.ORDINAL)
     private AstrologyStatus status;
 
-    private List<User> listOfUsers;
+    @OneToMany
+    private List<Chart> chartList;
 
-    private Double score;
+    @OneToMany
+    private List<ChartRating> chartRating;
 }

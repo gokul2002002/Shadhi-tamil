@@ -8,6 +8,7 @@ import com.sayit.shadhi.Enums.GeneralStatus;
 import com.sayit.shadhi.Exceptions.ChartNotFoundException;
 import com.sayit.shadhi.Models.Astrologer;
 import com.sayit.shadhi.Models.ChartRequest;
+import com.sayit.shadhi.Models.ChartRating;
 import com.sayit.shadhi.Repositories.AstrologerRepository;
 import com.sayit.shadhi.Repositories.ChartRepository;
 import jakarta.transaction.Transactional;
@@ -24,7 +25,6 @@ import java.util.Optional;
 public class AstrologyService {
 
     private final ChartRepository chartRepository;
-
     private final AstrologerRepository astrologerRepository;
 
     @Transactional
@@ -39,16 +39,22 @@ public class AstrologyService {
         return "documents";
     }
 
-    private void giveIntemationToUsers(long brideID , long groomID ,  String message){
+    private void giveInformation(long brideID , long groomID ,  String message){
 
     }
 
     @Transactional
-    public GeneralStatus setScoreBYAstrologer(ChartScoreDTO chartScoreDTO)throws ChartNotFoundException{
+    public GeneralStatus setScoreBYAstrologer(ChartScoreDTO chartScoreDTO , String userName)throws ChartNotFoundException{
         Optional<ChartRequest> chartRequest = chartRepository.findById(chartScoreDTO.getChartId());
         if (chartRequest.isPresent()){
            ChartRequest chartData = chartRequest.get();
-           chartData.setScore(chartScoreDTO.getScore());
+           chartData.getChartRating().add(
+                   ChartRating
+                           .builder()
+                           .astrologer(astrologerRepository.findByEmail(userName).get())
+                           .rating(chartScoreDTO.getScore())
+                           .build()
+           );
            chartData.setStatus(AstrologyStatus.COMPLETED);
            return GeneralStatus.UPDATED;
         }else {
@@ -73,15 +79,5 @@ public class AstrologyService {
          }
     }
 
-    @Transactional
-    public String setScoretotheCharts(double scorePoints ,  long ChartId){
-         Optional<ChartRequest> chartRequest = chartRepository.findById(ChartId);
-         if (chartRequest.isPresent()){
-               chartRequest.get().setScore(scorePoints);
-         }else {
-              throw new ChartNotFoundException("Chart not available for you");
-         }
-         return "Updated successFuly";
-    }
 
 }
