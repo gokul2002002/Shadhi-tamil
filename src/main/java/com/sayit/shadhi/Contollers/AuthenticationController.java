@@ -22,8 +22,8 @@ public class AuthenticationController {
     private final AuthenticationService authenticationService;
 
     @PostMapping("/send-otp")
-    public ResponseEntity<?> sendOtpForVerification(@RequestParam String email){
-        return authenticationService.sendOtpForVerification(email);
+    public ResponseEntity<String> sendOtpForVerification(@RequestParam String email){
+        return ResponseEntity.status(HttpStatus.OK).body(authenticationService.sendOtpForVerification(email));
     }
 
     @PostMapping("/signup")
@@ -33,7 +33,6 @@ public class AuthenticationController {
 
     @PostMapping("/login")
     public ResponseEntity<String> loginAsuser(@RequestBody LoginDTO userDetail){
-      Authentication authentication =  new ContextImplementation().getAuthentication();
         try{
             return authenticationService.loginAsUser(userDetail);
         }catch (UsernameNotFoundException | JsonProcessingException j){

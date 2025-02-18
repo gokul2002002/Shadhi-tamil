@@ -27,10 +27,7 @@ public class UserFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
-        if(request.getRequestURI().startsWith("/auth")){
-            filterChain.doFilter(request , response);
-            return;
-        }
+
         String token = request.getHeader("bearer");
         if(token.isEmpty()){
             response.setStatus(HttpStatus.BAD_GATEWAY.value());

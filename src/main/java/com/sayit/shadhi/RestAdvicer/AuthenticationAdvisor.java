@@ -1,6 +1,7 @@
 package com.sayit.shadhi.RestAdvicer;
 
 import com.fasterxml.jackson.core.JsonParseException;
+import com.sayit.shadhi.Exceptions.OtpNotValidException;
 import com.sayit.shadhi.Exceptions.VerificationFailedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,11 @@ public class AuthenticationAdvisor {
     }
     @ExceptionHandler(JsonParseException.class)
     public ResponseEntity<String> sendJsonProcessingFailed(JsonParseException jsonParseException){
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("verify the parameters that you send");
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(jsonParseException.getMessage());
+    }
+
+    @ExceptionHandler(OtpNotValidException.class)
+    public ResponseEntity<String> sendOtpNotValidException(OtpNotValidException otpNotValidException){
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(otpNotValidException.getMessage());
     }
 }

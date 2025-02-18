@@ -43,5 +43,4 @@ public class AstrologyController {
         return ResponseEntity.ok().body(
                 astrologyService.getAstrologerByRange(astrologerPriceFilter));
     }
-
 }

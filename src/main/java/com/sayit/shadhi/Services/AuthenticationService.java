@@ -20,6 +20,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -42,6 +44,7 @@ public class AuthenticationService {
     private String secreatKey;
     @Value("{jwt.issuer.name}")
     private String issuer;
+    @Value("${spring.mail.username}") private String sender;
 
     long expirationTime = 14 * 24 * 60 * 60 * 1000;
     private final UserRepository userRepository;
@@ -50,21 +53,28 @@ public class AuthenticationService {
     private final RedisService redisService;
     private final ObjectMapper objectMapper;
     private final MinioService minioService;
-
+    private final JavaMailSender mailSender;
     public  String generateOTP() {
         Random random = new Random();
         int otp = 100000 + random.nextInt(900000);
         return String.valueOf(otp);
     }
 
-    public ResponseEntity<List<User>> sendOtpForVerification(String email)throws UsernameNotFoundException{
+    public String sendOtpForVerification(String email)throws UsernameNotFoundException{
         Optional<User> user = userRepository.findByEmail(email);
         Optional<Astrologer> astrologer = astrologerRepository.findByEmail(email);
         if(user.isPresent() || astrologer.isPresent()){
             throw new UserAlreadyExistException("User with this mail id already exist");
         }
-        redisService.addItem(email , generateOTP() , Duration.ofMinutes(10));
-        return ResponseEntity.status(HttpStatus.OK).body(userRepository.findAll());
+        String otp = generateOTP();
+        redisService.addItem(email , otp , Duration.ofMinutes(10));
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom(sender);
+        message.setTo(email);
+        message.setSubject("Your OTP");
+        message.setText(otp);
+        mailSender.send(message);
+        return "Verification Email Sent to ${email}";
     }
 
     public ResponseEntity<String> createUserInDb(User user){

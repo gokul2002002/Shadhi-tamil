@@ -18,8 +18,6 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class SecurityProvider implements AuthenticationProvider {
 
-    @Value("${security.secret.key}")
-    private String securityKey;
 
     private final SecurityDecoder securityDecoder;
 

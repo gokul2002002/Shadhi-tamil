@@ -4,10 +4,10 @@ import com.sayit.shadhi.Models.User;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Component;
 
 import java.util.Collection;
 import java.util.List;
-
 
 public class UserDetailImp implements UserDetails{
 
@@ -18,7 +18,7 @@ public class UserDetailImp implements UserDetails{
       }
 
       @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
+      public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(()->user.getAuthority());
     }
 
